@@ -16,6 +16,7 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/eden"
+theme.wallpaper                                 = theme.dir .. "/wall.png"
 theme.font                                      = "IBM Plex Mono Text 8"
 theme.fg_normal                                 = "#DDDDFF"
 theme.fg_focus                                  = "#EA6F81"
@@ -86,10 +87,6 @@ theme.titlebar_maximized_button_focus_active    = theme.dir .. "/icons/titlebar/
 theme.titlebar_maximized_button_normal_active   = theme.dir .. "/icons/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_inactive  = theme.dir .. "/icons/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/maximized_normal_inactive.png"
-
-theme.wallpaper = function(s)
-    return "/home/katya/Pictures/Wallpapers/1039991.jpg"
-end
 
 local markup = lain.util.markup
 local separators = lain.util.separators
@@ -220,7 +217,7 @@ local arrl_ld = separators.arrow_left("alpha", theme.bg_focus)
 function theme.at_screen_connect(s)
     -- Quake application
     s.quake = lain.util.quake({ app = awful.util.terminal })
-    gears.wallpaper.maximized(theme.wallpaper(s), s, true)
+    gears.wallpaper.maximized(theme.wallpaper, s, true)
 
     -- Tags
     awful.tag(awful.util.tagnames, s, awful.layout.layouts)
