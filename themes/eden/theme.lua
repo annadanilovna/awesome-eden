@@ -5,11 +5,13 @@
 
 --]]
 
-local gears = require("gears")
-local lain  = require("lain")
-local awful = require("awful")
-local wibox = require("wibox")
-local dpi   = require("beautiful.xresources").apply_dpi
+local gears         = require("gears")
+local lain          = require("lain")
+local awful         = require("awful")
+local wibox         = require("wibox")
+local dpi           = require("beautiful.xresources").apply_dpi
+local beautiful     = require("beautiful")
+local freedesktop   = require("freedesktop")
 
 local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
@@ -18,19 +20,19 @@ local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/eden"
 theme.wallpaper                                 = theme.dir .. "/wall.png"
 theme.font                                      = "IBM Plex Mono Text 8"
-theme.fg_normal                                 = "#DDDDFF"
-theme.fg_focus                                  = "#EA6F81"
-theme.fg_urgent                                 = "#CC9393"
-theme.bg_normal                                 = "#1A1A1A"
-theme.bg_focus                                  = "#313131"
-theme.bg_urgent                                 = "#1A1A1A"
+theme.fg_normal                                 = "#ddddff"
+theme.fg_focus                                  = "#ffffff"
+theme.fg_urgent                                 = "#181818"
+theme.bg_normal                                 = gears.color.transparent 
+theme.bg_focus                                  = "#c001bc"
+theme.bg_urgent                                 = "#f101e3"
 theme.border_width                              = dpi(1)
-theme.border_normal                             = "#3F3F3F"
-theme.border_focus                              = "#7F7F7F"
-theme.border_marked                             = "#CC9393"
-theme.tasklist_bg_focus                         = "#1A1A1A"
-theme.titlebar_bg_focus                         = theme.bg_focus
-theme.titlebar_bg_normal                        = theme.bg_normal
+theme.border_normal                             = "#771eae"
+theme.border_focus                              = "#eb02d6"
+theme.border_marked                             = "#4bcbfe"
+theme.tasklist_bg_focus                         = gears.color.transparent 
+theme.titlebar_bg_focus                         = gears.color.transparent
+theme.titlebar_bg_normal                        = gears.color.transparent
 theme.titlebar_fg_focus                         = theme.fg_focus
 theme.menu_height                               = dpi(16)
 theme.menu_width                                = dpi(140)
@@ -93,7 +95,6 @@ local separators = lain.util.separators
 
 local keyboardlayout = awful.widget.keyboardlayout:new()
 
-
 -- Textclock
 local clockicon = wibox.widget.imagebox(theme.widget_clock)
 local clock = awful.widget.watch(
@@ -102,16 +103,6 @@ local clock = awful.widget.watch(
         widget:set_markup(" " .. markup.font(theme.font, stdout))
     end
 )
-
--- Calendar
-theme.cal = lain.widget.cal({
-    attach_to = { clock },
-    notification_preset = {
-        font = "IBM Plex Mono Text 8",
-        fg   = theme.fg_normal,
-        bg   = theme.bg_normal
-    }
-})
 
 -- MEM
 local memicon = wibox.widget.imagebox(theme.widget_mem)
@@ -223,7 +214,7 @@ function theme.at_screen_connect(s)
     awful.tag(awful.util.tagnames, s, awful.layout.layouts)
 
     -- Create a promptbox for each screen
-    s.mypromptbox = awful.widget.prompt()
+    s.mypromptbox = awful.widget.prompt({bg = gears.color.transparent, height = dpi(18)})
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
@@ -234,61 +225,71 @@ function theme.at_screen_connect(s)
                            awful.button({}, 4, function () awful.layout.inc( 1) end),
                            awful.button({}, 5, function () awful.layout.inc(-1) end)))
     -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
+    s.mytaglist = awful.widget.taglist {
+        screen = s, 
+        filter = awful.widget.taglist.filter.all, 
+        buttons = awful.util.taglist_buttons,
+    }
 
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(18), bg = gears.color.transparent, fg = theme.fg_normal })
 
-    -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(18), bg = theme.bg_normal, fg = theme.fg_normal })
+    -- Create a launcher widget and a main menu
+    s.mymainmenu = freedesktop.menu.build {
+        before = {
+            { beautiful.awesome_icon, nil },
+            { "Hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
+            { "Manual", string.format("%s -e man awesome", terminal) },
+            { "Terminal", terminal },
+            { "IDE", ide },
+            { "Browser", browser },
+            { "", nil},
+        },
+        after = {
+            { "", nil},
+            { "Restart", awesome.restart },
+            { "Quit", function() awesome.quit() end },
+        }
+    }
 
-    -- Add widgets to the wibox
+    s.mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = s.mainmenu })
+
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
-        { -- Left widgets
+        {
             layout = wibox.layout.fixed.horizontal,
+            s.mylauncher,
+            spr,
+            s.mylayoutbox,
             spr,
             s.mytaglist,
-            s.mypromptbox,
             spr,
+            s.mypromptbox,
         },
-        s.mytasklist, -- Middle widget
+        s.mytasklist,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            arrl_ld, -- light
-            wibox.container.background(spr, theme.bg_focus),
-            wibox.container.background(wibox.widget.textbox('lang: '), theme.bg_focus),
-            wibox.container.background(keyboardlayout, theme.bg_focus),
-            wibox.container.background(spr, theme.bg_focus),
-            arrl_dl, -- dark
-            volicon,
-            theme.volume.widget,
-            arrl_ld, -- light
-            wibox.container.background(memicon, theme.bg_focus),
-            wibox.container.background(mem.widget, theme.bg_focus),
-            arrl_dl, -- dark
-            tempicon,
-            temp.widget,
-            arrl_ld, -- light
-            wibox.container.background(cpuicon, theme.bg_focus),
-            wibox.container.background(cpu.widget, theme.bg_focus),
-            arrl_dl, -- dark
-            baticon,
-            bat.widget,
-            arrl_ld, -- light
-            wibox.container.background(neticon, theme.bg_focus),
-            wibox.container.background(net.widget, theme.bg_focus),
-            arrl_dl, -- dark
-            clock,
-            spr,
-            arrl_ld, -- light
-            wibox.container.background(spr, theme.bg_focus),
-            wibox.container.background(s.mylayoutbox, theme.bg_focus),
-            wibox.container.background(spr, theme.bg_focus),
-            wibox.container.background(spr, theme.bg_focus),
-            arrl_dl, -- dark
             spr,
             wibox.widget.systray(),
+            spr, 
+            volicon,
+            theme.volume.widget,
+            memicon,
+            mem.widget,
+            tempicon,
+            temp.widget,
+            cpuicon,
+            cpu.widget,
+            baticon,
+            bat.widget,
+            neticon,
+            net.widget,
+            spr,
+            wibox.widget.textbox('lang:'),
+            keyboardlayout,
+            spr,
+            clock,
             spr,
             spr,
         },
