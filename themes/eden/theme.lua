@@ -21,7 +21,7 @@ theme.font                                      = "IBM Plex Mono Text 8"
 theme.fg_normal                                 = "#DDDDFF"
 theme.fg_focus                                  = "#EA6F81"
 theme.fg_urgent                                 = "#CC9393"
-theme.bg_normal                                 = "#1A1A1A"
+theme.bg_normal                                 = gears.color.transparent 
 theme.bg_focus                                  = "#313131"
 theme.bg_urgent                                 = "#1A1A1A"
 theme.border_width                              = dpi(1)
@@ -212,7 +212,7 @@ local net = lain.widget.net({
 -- Separators
 local spr     = wibox.widget.textbox(' ')
 local arrl_dl = separators.arrow_left(theme.bg_focus, "alpha")
-local arrl_ld = separators.arrow_left("alpha", theme.bg_focus)
+local arrl_ld = separators.arrow_left("alpha")
 
 function theme.at_screen_connect(s)
     -- Quake application
@@ -255,38 +255,27 @@ function theme.at_screen_connect(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            arrl_ld, -- light
-            wibox.container.background(spr, theme.bg_focus),
-            wibox.container.background(wibox.widget.textbox('lang: '), theme.bg_focus),
-            wibox.container.background(keyboardlayout, theme.bg_focus),
-            wibox.container.background(spr, theme.bg_focus),
-            arrl_dl, -- dark
+            wibox.widget.textbox('lang: '),
+            keyboardlayout,
+            spr,
             volicon,
             theme.volume.widget,
-            arrl_ld, -- light
-            wibox.container.background(memicon, theme.bg_focus),
-            wibox.container.background(mem.widget, theme.bg_focus),
-            arrl_dl, -- dark
+            memicon,
+            mem.widget,
             tempicon,
             temp.widget,
-            arrl_ld, -- light
-            wibox.container.background(cpuicon, theme.bg_focus),
-            wibox.container.background(cpu.widget, theme.bg_focus),
-            arrl_dl, -- dark
+            cpuicon,
+            cpu.widget,
             baticon,
             bat.widget,
-            arrl_ld, -- light
-            wibox.container.background(neticon, theme.bg_focus),
-            wibox.container.background(net.widget, theme.bg_focus),
-            arrl_dl, -- dark
+            neticon,
+            net.widget,
             clock,
             spr,
-            arrl_ld, -- light
-            wibox.container.background(spr, theme.bg_focus),
-            wibox.container.background(s.mylayoutbox, theme.bg_focus),
-            wibox.container.background(spr, theme.bg_focus),
-            wibox.container.background(spr, theme.bg_focus),
-            arrl_dl, -- dark
+            spr,
+            s.mylayoutbox,
+            spr,
+            spr,
             spr,
             wibox.widget.systray(),
             spr,
