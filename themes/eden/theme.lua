@@ -5,11 +5,13 @@
 
 --]]
 
-local gears = require("gears")
-local lain  = require("lain")
-local awful = require("awful")
-local wibox = require("wibox")
-local dpi   = require("beautiful.xresources").apply_dpi
+local gears         = require("gears")
+local lain          = require("lain")
+local awful         = require("awful")
+local wibox         = require("wibox")
+local dpi           = require("beautiful.xresources").apply_dpi
+local beautiful     = require("beautiful")
+local freedesktop   = require("freedesktop")
 
 local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
@@ -93,7 +95,6 @@ local separators = lain.util.separators
 
 local keyboardlayout = awful.widget.keyboardlayout:new()
 
-
 -- Textclock
 local clockicon = wibox.widget.imagebox(theme.widget_clock)
 local clock = awful.widget.watch(
@@ -102,16 +103,6 @@ local clock = awful.widget.watch(
         widget:set_markup(" " .. markup.font(theme.font, stdout))
     end
 )
-
--- Calendar
-theme.cal = lain.widget.cal({
-    attach_to = { clock },
-    notification_preset = {
-        font = "IBM Plex Mono Text 8",
-        fg   = theme.fg_normal,
-        bg   = theme.bg_normal
-    }
-})
 
 -- MEM
 local memicon = wibox.widget.imagebox(theme.widget_mem)
@@ -223,7 +214,7 @@ function theme.at_screen_connect(s)
     awful.tag(awful.util.tagnames, s, awful.layout.layouts)
 
     -- Create a promptbox for each screen
-    s.mypromptbox = awful.widget.prompt()
+    s.mypromptbox = awful.widget.prompt({bg = gears.color.transparent, height = dpi(18)})
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
@@ -234,30 +225,54 @@ function theme.at_screen_connect(s)
                            awful.button({}, 4, function () awful.layout.inc( 1) end),
                            awful.button({}, 5, function () awful.layout.inc(-1) end)))
     -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
+    s.mytaglist = awful.widget.taglist {
+        screen = s, 
+        filter = awful.widget.taglist.filter.all, 
+        buttons = awful.util.taglist_buttons,
+    }
 
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(18), bg = gears.color.transparent, fg = theme.fg_normal })
 
-    -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(18), bg = theme.bg_normal, fg = theme.fg_normal })
+    -- Create a launcher widget and a main menu
+    s.mymainmenu = freedesktop.menu.build {
+        before = {
+            { beautiful.awesome_icon, nil },
+            { "Hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
+            { "Manual", string.format("%s -e man awesome", terminal) },
+            { "Terminal", terminal },
+            { "IDE", ide },
+            { "Browser", browser },
+            { "", nil},
+        },
+        after = {
+            { "", nil},
+            { "Restart", awesome.restart },
+            { "Quit", function() awesome.quit() end },
+        }
+    }
 
-    -- Add widgets to the wibox
+    s.mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = s.mainmenu })
+
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
-        { -- Left widgets
+        {
             layout = wibox.layout.fixed.horizontal,
+            s.mylauncher,
+            spr,
+            s.mylayoutbox,
             spr,
             s.mytaglist,
-            s.mypromptbox,
             spr,
+            s.mypromptbox,
         },
-        s.mytasklist, -- Middle widget
+        s.mytasklist,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            wibox.widget.textbox('lang: '),
-            keyboardlayout,
             spr,
+            wibox.widget.systray(),
+            spr, 
             volicon,
             theme.volume.widget,
             memicon,
@@ -270,14 +285,11 @@ function theme.at_screen_connect(s)
             bat.widget,
             neticon,
             net.widget,
+            spr,
+            wibox.widget.textbox('lang:'),
+            keyboardlayout,
+            spr,
             clock,
-            spr,
-            spr,
-            s.mylayoutbox,
-            spr,
-            spr,
-            spr,
-            wibox.widget.systray(),
             spr,
             spr,
         },
