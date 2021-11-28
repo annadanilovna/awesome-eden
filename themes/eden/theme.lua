@@ -18,7 +18,7 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/eden"
-theme.wallpaper                                 = theme.dir .. "/wall.png"
+themtepages.e.wallpaper                         = theme.dir .. "/wall.png"
 theme.font                                      = "IBM Plex Mono Text 8"
 theme.fg_normal                                 = "#DDDDFF"
 theme.fg_focus                                  = "#EA6F81"
@@ -201,9 +201,7 @@ local net = lain.widget.net({
 })
 
 -- Separators
-local spr     = wibox.widget.textbox(' ')
-local arrl_dl = separators.arrow_left(theme.bg_focus, "alpha")
-local arrl_ld = separators.arrow_left("alpha")
+local spr = wibox.widget.textbox(" ")
 
 function theme.at_screen_connect(s)
     -- Quake application
@@ -294,6 +292,7 @@ function theme.at_screen_connect(s)
             spr,
         },
     }
+
 end
 
 return theme
