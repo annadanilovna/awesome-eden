@@ -10,3 +10,6 @@
 [submodule "revelation"]
 	path = revelation
 	url = git@github.com:guotsuan/awesome-revelation
+[submodule "cyclefocus"]
+	path = cyclefocus
+	url = https://github.com/blueyed/awesome-cyclefocus.git

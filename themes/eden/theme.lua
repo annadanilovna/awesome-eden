@@ -18,8 +18,8 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/eden"
-themtepages.e.wallpaper                         = theme.dir .. "/wall.png"
-theme.font                                      = "IBM Plex Mono Text 8"
+theme.wallpaper                         = theme.dir .. "/wall.png"
+theme.fnit                                      = "IBM Plex Mono Text 8"
 theme.fg_normal                                 = "#DDDDFF"
 theme.fg_focus                                  = "#EA6F81"
 theme.fg_urgent                                 = "#CC9393"
@@ -128,17 +128,6 @@ local temp = lain.widget.temp({
     end
 })
 
--- / fs
--- local fsicon = wibox.widget.imagebox(theme.widget_hdd)
---[[ commented because it needs Gio/Glib >= 2.54
-theme.fs = lain.widget.fs({
-    notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "Terminus 10" },
-    settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. fs_now["/"].percentage .. "% "))
-    end
-})
---]]
-
 -- Battery
 local baticon = wibox.widget.imagebox(theme.widget_battery)
 local bat = lain.widget.bat({
@@ -202,6 +191,9 @@ local net = lain.widget.net({
 
 -- Separators
 local spr = wibox.widget.textbox(" ")
+-- ]]
+
+
 
 function theme.at_screen_connect(s)
     -- Quake application
@@ -250,7 +242,7 @@ function theme.at_screen_connect(s)
             { "Quit", function() awesome.quit() end },
         }
     }
-
+    
     s.mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = s.mainmenu })
 
     s.mywibox:setup {
@@ -265,7 +257,7 @@ function theme.at_screen_connect(s)
             spr,
             s.mypromptbox,
         },
-        s.mytasklist,
+        spr, -- s.mytasklist,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             spr,
@@ -292,7 +284,7 @@ function theme.at_screen_connect(s)
             spr,
         },
     }
-
 end
 
 return theme
+
