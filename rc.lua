@@ -14,4 +14,7 @@ require("screen")    -- screen & theme initialization
 require("bindings")  -- keyboard and mouse bindings
 require("rules")     -- rules
 require("signals")   -- signals
+require("myautofocus") -- autofocus
+require("taskbar")   -- taskbar
 require("titlebar")  -- application titlebar
+require("desktop")   -- desktop widget

@@ -23,7 +23,7 @@ config.cycle_prev   = true  -- cycle with only the previously focused client or 
 config.use_titlebar = false
 
 awful.util.terminal = config.terminal
-awful.util.tagnames = { "1", "2", "3", "4", "5", "6" }
+awful.util.tagnames = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
 awful.layout.layouts = {
     awful.layout.suit.floating,
     awful.layout.suit.tile,
