@@ -18,7 +18,7 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/eden"
-theme.wallpaper                         = theme.dir .. "/wall.png"
+theme.wallpaper                                 = theme.dir .. "/wall.png"
 theme.fnit                                      = "IBM Plex Mono Text 8"
 theme.fg_normal                                 = "#DDDDFF"
 theme.fg_focus                                  = "#EA6F81"
