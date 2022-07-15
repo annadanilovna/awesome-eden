@@ -18,12 +18,12 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/eden"
-theme.wallpaper                         = theme.dir .. "/wall.png"
+theme.wallpaper                                 = theme.dir .. "/wall.png"
 theme.fnit                                      = "IBM Plex Mono Text 8"
 theme.fg_normal                                 = "#DDDDFF"
 theme.fg_focus                                  = "#EA6F81"
 theme.fg_urgent                                 = "#CC9393"
-theme.bg_normal                                 = gears.color.transparent 
+theme.bg_normal                                 = gears.color.transparent
 theme.bg_focus                                  = "#313131"
 theme.bg_urgent                                 = "#1A1A1A"
 theme.border_width                              = dpi(1)
@@ -216,14 +216,14 @@ function theme.at_screen_connect(s)
                            awful.button({}, 5, function () awful.layout.inc(-1) end)))
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist {
-        screen = s, 
-        filter = awful.widget.taglist.filter.all, 
+        screen = s,
+        filter = awful.widget.taglist.filter.all,
         buttons = awful.util.taglist_buttons,
     }
 
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(18), bg = gears.color.transparent, fg = theme.fg_normal })
+    s.mywibox = awful.wibar({ position = "bottom", screen = s, height = dpi(18), bg = gears.color.transparent, fg = theme.fg_normal })
 
     -- Create a launcher widget and a main menu
     s.mymainmenu = freedesktop.menu.build {
@@ -242,7 +242,7 @@ function theme.at_screen_connect(s)
             { "Quit", function() awesome.quit() end },
         }
     }
-    
+
     s.mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = s.mainmenu })
 
     s.mywibox:setup {
@@ -262,7 +262,7 @@ function theme.at_screen_connect(s)
             layout = wibox.layout.fixed.horizontal,
             spr,
             wibox.widget.systray(),
-            spr, 
+            spr,
             volicon,
             theme.volume.widget,
             memicon,
@@ -287,4 +287,3 @@ function theme.at_screen_connect(s)
 end
 
 return theme
-

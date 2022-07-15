@@ -9,6 +9,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
                       require("awful.hotkeys_popup.keys")
 local naughty = require("naughty")
 local revelation = require("revelation")
+--local cyclefocus = require('cyclefocus')
 
 local config  = require("config")
 local menu    = require("menu")
@@ -33,7 +34,7 @@ bindings.globalkeys = mytable.join(
     awful.key({ config.modkey }, "w", function () menu.mainmenu:show() end, {description = "show main menu", group = "awesome"}),
     awful.key({ config.modkey, "Control" }, "r", awesome.restart, {description = "reload awesome", group = "awesome"}),
     awful.key({ config.modkey, "Shift" }, "q", awesome.quit, {description = "quit awesome", group = "awesome"}),
-    awful.key({ config.modkey }, "b", function () -- Show/hide wibox
+    awful.key({ config.modkey }, "h", function () -- Show/hide wibox
         for s in screen do
                 s.mywibox.visible = not s.mywibox.visible
                 if s.mybottomwibox then
@@ -85,18 +86,10 @@ bindings.globalkeys = mytable.join(
     awful.key({ config.modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end, {description = "focus the next screen", group = "screen"}),
     awful.key({ config.modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end, {description = "focus the previous screen", group = "screen"}),
     awful.key({ config.modkey }, "u", awful.client.urgent.jumpto, {description = "jump to urgent client", group = "client"}),
-    awful.key({ config.modkey }, "Tab", function ()
-            if cycle_prev then
-                awful.client.focus.history.previous()
-            else
-                awful.client.focus.byidx(-1)
-            end
-            if client.focus then
-                client.focus:raise()
-            end
-        end, {description = "cycle with previous/go back", group = "client"}),
-     awful.key({ config.modkey }, "space", function () awful.layout.inc( 1) end, {description = "select next", group = "layout"}),
-     awful.key({ config.modkey, "Shift" }, "space", function () awful.layout.inc(-1) end, {description = "select previous", group = "layout"}),
+
+    -- new layouts
+    awful.key({ config.modkey }, "space", function () awful.layout.inc( 1) end, {description = "select next", group = "layout"}),
+    awful.key({ config.modkey, "Shift" }, "space", function () awful.layout.inc(-1) end, {description = "select previous", group = "layout"}),
 
     -- Launchers
     awful.key({ config.modkey }, "Return", function () awful.spawn(config.terminal) end, {description = "open a terminal", group = "terminal"}),
@@ -106,8 +99,8 @@ bindings.globalkeys = mytable.join(
     awful.key({ config.modkey }, "v", function () awful.spawn.with_shell("xsel -b | xsel") end, {description = "copy gtk to terminal", group = "terminal"}),
 
     -- Screen brightness
-    awful.key({ }, "XF86MonBrightnessUp", function () os.execute("xbacklight -inc 10") end, {description = "+10%", group = "hotkeys"}),
-    awful.key({ }, "XF86MonBrightnessDown", function () os.execute("xbacklight -dec 10") end, {description = "-10%", group = "hotkeys"}),
+    awful.key({ config.modkey }, "b", function () os.execute("brightnessctl s +10%") end, {description = "+10%", group = "hotkeys"}),
+    awful.key({ config.modkey }, "d", function () os.execute("brightnessctl s 10%-") end, {description = "-10%", group = "hotkeys"}),
 
     -- ALSA volume control
     awful.key({ config.altkey, "Control" }, "Up",
